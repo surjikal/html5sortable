@@ -42,6 +42,9 @@ $.fn.sortable = function(options) {
 			dt.effectAllowed = 'move';
 			dt.setData('Text', 'dummy');
 			index = (dragging = $(this)).addClass('sortable-dragging').index();
+            if (options.start) {
+                options.start(e, {item: dragging});
+            }
 		}).on('dragend.h5s', function() {
 			if (!dragging) {
 				return;
@@ -49,6 +52,9 @@ $.fn.sortable = function(options) {
 			dragging.removeClass('sortable-dragging').show();
 			placeholders.detach();
 			if (index != dragging.index()) {
+                if (options.update) {
+                    options.update(e, {item: dragging});
+                }
 				dragging.parent().trigger('sortupdate', {item: dragging});
 			}
 			dragging = null;
@@ -63,6 +69,9 @@ $.fn.sortable = function(options) {
 				e.stopPropagation();
 				placeholders.filter(':visible').after(dragging);
 				dragging.trigger('dragend.h5s');
+                if (options.stop) {
+                    options.stop(e, {item: dragging});
+                }
 				return false;
 			}
 			e.preventDefault();
